@@ -1,0 +1,234 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  nom       String?
+  prenom    String?
+  profil    String   @default("compte_salarie")
+  googleId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  salarie   Salarie?
+}
+
+model Salarie {
+  id            String   @id @default(cuid())
+  matricule     String   @unique
+  nom           String
+  prenom        String
+  email         String   @unique
+  telephone     String?
+  fonction      String
+  poste         String?
+  direction     String?
+  dateEmbauche  DateTime
+  statut        String   @default("actif")
+  userId        String?  @unique
+  user          User?    @relation(fields: [userId], references: [id])
+  documents     Document[]
+  affectations  Affectation[]
+  demandes      Demande[]
+  objectifs     Objectif[]
+  evaluations   Evaluation[]
+  formations    Formation[]
+  heuresSup     HeureSupplementaire[]
+  tempsTravail  TempsTravail[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Offre {
+  id              String        @id @default(cuid())
+  libelleOffre    String
+  typeOffre       String
+  domaineActivite String
+  competences     String
+  niveauEtude      String
+  datePublication DateTime      @default(now())
+  dateEffet       DateTime
+  dateExpiration  DateTime
+  lienOffre       String        @unique
+  candidatures    Candidature[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Candidature {
+  id           String   @id @default(cuid())
+  nom          String
+  prenom       String
+  email        String
+  domaine      String
+  competences  String
+  niveauEtude  String
+  genre        String
+  commentaire  String?
+  cvUrl        String?
+  lmUrl        String?
+  statut       String   @default("en_attente")
+  offreId      String
+  offre        Offre    @relation(fields: [offreId], references: [id])
+  notation     Notation?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Notation {
+  id              String       @id @default(cuid())
+  noteTechnique   Float
+  noteCommunication Float
+  noteMotivation  Float
+  noteCulture     Float
+  commentaire     String?
+  candidatureId   String       @unique
+  candidature     Candidature  @relation(fields: [candidatureId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  type      String
+  nomFichier String
+  url       String
+  salarieId String
+  salarie   Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Affectation {
+  id             String   @id @default(cuid())
+  poste          String
+  dateAffectation DateTime
+  direction      String
+  statut         String
+  salarieId      String
+  salarie         Salarie @relation(fields: [salarieId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Demande {
+  id          String   @id @default(cuid())
+  type        String
+  dateDebut   DateTime
+  dateFin     DateTime
+  motif       String?
+  statut      String   @default("en_attente")
+  salarieId   String
+  salarie     Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Objectif {
+  id          String   @id @default(cuid())
+  libelle     String
+  description String
+  progression Float    @default(0)
+  salarieId   String
+  salarie     Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Evaluation {
+  id          String   @id @default(cuid())
+  type        String
+  note        Float?
+  commentaire String?
+  salarieId   String
+  salarie     Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Formation {
+  id          String   @id @default(cuid())
+  libelle     String
+  description String
+  dateDebut   DateTime
+  dateFin     DateTime
+  statut      String   @default("planifie")
+  salarieId   String
+  salarie     Salarie  @relation(fields: [salarieId], references: [id])
+  evaluations EvaluationFormation[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EvaluationFormation {
+  id          String   @id @default(cuid())
+  type        String
+  note        Float?
+  commentaire String?
+  formationId String
+  formation   Formation @relation(fields: [formationId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model HeureSupplementaire {
+  id        String   @id @default(cuid())
+  date      DateTime
+  heures    Float
+  salarieId String
+  salarie   Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model TempsTravail {
+  id        String   @id @default(cuid())
+  date      DateTime
+  heures    Float
+  salarieId String
+  salarie   Salarie  @relation(fields: [salarieId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Competence {
+  id      String   @id @default(cuid())
+  libelle String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Domaine {
+  id      String   @id @default(cuid())
+  libelle String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Fonction {
+  id      String   @id @default(cuid())
+  libelle String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NiveauEtude {
+  id      String   @id @default(cuid())
+  libelle String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Profil {
+  id      String   @id @default(cuid())
+  libelle String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
