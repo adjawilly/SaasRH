@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -23,7 +23,7 @@ export default function AffectationSalarie() {
   const { data: salarie } = useQuery({
     queryKey: ['salarie', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/gestion-admin/salaries/${id}`)
+      const response = await api.get(`/api/gestion-admin/salaries/${id}`)
       return response.data
     },
   })
@@ -37,7 +37,7 @@ export default function AffectationSalarie() {
 
   const mutation = useMutation({
     mutationFn: async (data: AffectationForm) => {
-      const response = await axios.post(`/api/gestion-admin/salaries/${id}/affectation`, data)
+      const response = await api.post(`/api/gestion-admin/salaries/${id}/affectation`, data)
       return response.data
     },
     onSuccess: () => {

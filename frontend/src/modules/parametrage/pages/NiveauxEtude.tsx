@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Edit, Trash2, Plus } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -11,14 +11,14 @@ export default function NiveauxEtude() {
   const { data: niveaux, refetch } = useQuery({
     queryKey: ['niveaux-etude'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/niveaux-etude')
+      const response = await api.get('/api/parametrage/niveaux-etude')
       return response.data
     },
   })
 
   const createMutation = useMutation({
     mutationFn: async (data: { libelle: string }) => {
-      const response = await axios.post('/api/parametrage/niveaux-etude', data)
+      const response = await api.post('/api/parametrage/niveaux-etude', data)
       return response.data
     },
     onSuccess: () => {
@@ -30,7 +30,7 @@ export default function NiveauxEtude() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: { id: string; libelle: string }) => {
-      const response = await axios.put(`/api/parametrage/niveaux-etude/${data.id}`, { libelle: data.libelle })
+      const response = await api.put(`/api/parametrage/niveaux-etude/${data.id}`, { libelle: data.libelle })
       return response.data
     },
     onSuccess: () => {
@@ -43,7 +43,7 @@ export default function NiveauxEtude() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await axios.delete(`/api/parametrage/niveaux-etude/${id}`)
+      await api.delete(`/api/parametrage/niveaux-etude/${id}`)
     },
     onSuccess: () => {
       toast.success('Niveau d\'étude supprimé')

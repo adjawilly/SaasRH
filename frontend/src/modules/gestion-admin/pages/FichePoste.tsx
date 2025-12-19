@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Download, FileText } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -11,14 +11,14 @@ export default function FichePoste() {
   const { data: salarie } = useQuery({
     queryKey: ['salarie', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/gestion-admin/salaries/${id}`)
+      const response = await api.get(`/api/gestion-admin/salaries/${id}`)
       return response.data
     },
   })
 
   const generateMutation = useMutation({
     mutationFn: async (format: 'pdf' | 'excel' | 'word') => {
-      const response = await axios.post(`/api/gestion-admin/salaries/${id}/fiche-poste`, { format }, {
+      const response = await api.post(`/api/gestion-admin/salaries/${id}/fiche-poste`, { format }, {
         responseType: 'blob',
       })
       return response.data

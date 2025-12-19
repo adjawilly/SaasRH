@@ -1,6 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
 import { useSearchParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { CheckCircle, XCircle } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -12,7 +12,7 @@ export default function Preselection() {
   const { data: candidature } = useQuery({
     queryKey: ['candidature', candidatureId],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/candidatures/${candidatureId}`)
+      const response = await api.get(`/api/recrutement/candidatures/${candidatureId}`)
       return response.data
     },
     enabled: !!candidatureId,
@@ -21,7 +21,7 @@ export default function Preselection() {
   const { data: offre } = useQuery({
     queryKey: ['offre', candidature?.offreId],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/offres/${candidature?.offreId}`)
+      const response = await api.get(`/api/recrutement/offres/${candidature?.offreId}`)
       return response.data
     },
     enabled: !!candidature?.offreId,
@@ -29,7 +29,7 @@ export default function Preselection() {
 
   const mutation = useMutation({
     mutationFn: async (preselectionne: boolean) => {
-      const response = await axios.post(`/api/recrutement/candidatures/${candidatureId}/preselection`, {
+      const response = await api.post(`/api/recrutement/candidatures/${candidatureId}/preselection`, {
         preselectionne,
       })
       return response.data

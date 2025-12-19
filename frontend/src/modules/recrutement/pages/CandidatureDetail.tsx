@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Download, CheckCircle, XCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -12,7 +12,7 @@ export default function CandidatureDetail() {
   const { data: candidature, isLoading } = useQuery({
     queryKey: ['candidature', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/candidatures/${id}`)
+      const response = await api.get(`/api/recrutement/candidatures/${id}`)
       return response.data
     },
   })

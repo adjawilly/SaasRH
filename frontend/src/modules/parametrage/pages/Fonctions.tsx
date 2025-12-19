@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Edit, Trash2, Plus } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -11,14 +11,14 @@ export default function Fonctions() {
   const { data: fonctions, refetch } = useQuery({
     queryKey: ['fonctions'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/fonctions')
+      const response = await api.get('/api/parametrage/fonctions')
       return response.data
     },
   })
 
   const createMutation = useMutation({
     mutationFn: async (data: { libelle: string }) => {
-      const response = await axios.post('/api/parametrage/fonctions', data)
+      const response = await api.post('/api/parametrage/fonctions', data)
       return response.data
     },
     onSuccess: () => {
@@ -30,7 +30,7 @@ export default function Fonctions() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: { id: string; libelle: string }) => {
-      const response = await axios.put(`/api/parametrage/fonctions/${data.id}`, { libelle: data.libelle })
+      const response = await api.put(`/api/parametrage/fonctions/${data.id}`, { libelle: data.libelle })
       return response.data
     },
     onSuccess: () => {
@@ -43,7 +43,7 @@ export default function Fonctions() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await axios.delete(`/api/parametrage/fonctions/${id}`)
+      await api.delete(`/api/parametrage/fonctions/${id}`)
     },
     onSuccess: () => {
       toast.success('Fonction supprimée')

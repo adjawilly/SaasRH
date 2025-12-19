@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Eye, Filter, Download } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -31,7 +31,7 @@ export default function CandidaturesList() {
       const url = offreId 
         ? `/api/recrutement/candidatures?offre=${offreId}`
         : '/api/recrutement/candidatures'
-      const response = await axios.get(url)
+      const response = await api.get(url)
       return response.data
     },
   })

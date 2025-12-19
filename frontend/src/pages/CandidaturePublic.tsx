@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useParams } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../api'
 import { Upload, Send } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -29,7 +29,7 @@ export default function CandidaturePublic() {
   const { data: offre } = useQuery({
     queryKey: ['offre-public', token],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/offres/public/${token}`)
+      const response = await api.get(`/api/recrutement/offres/public/${token}`)
       return response.data
     },
   })
@@ -37,7 +37,7 @@ export default function CandidaturePublic() {
   const { data: domaines } = useQuery({
     queryKey: ['domaines'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/domaines')
+      const response = await api.get('/api/parametrage/domaines')
       return response.data
     },
   })
@@ -45,7 +45,7 @@ export default function CandidaturePublic() {
   const { data: competences } = useQuery({
     queryKey: ['competences'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/competences')
+      const response = await api.get('/api/parametrage/competences')
       return response.data
     },
   })
@@ -53,7 +53,7 @@ export default function CandidaturePublic() {
   const { data: niveauxEtude } = useQuery({
     queryKey: ['niveaux-etude'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/niveaux-etude')
+      const response = await api.get('/api/parametrage/niveaux-etude')
       return response.data
     },
   })
@@ -78,9 +78,7 @@ export default function CandidaturePublic() {
       if (lmFile) formData.append('lm', lmFile)
       formData.append('offreId', offre.id)
 
-      const response = await axios.post('/api/recrutement/candidatures/public', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      const response = await api.post('/api/recrutement/candidatures/public', formData)
       return response.data
     },
     onSuccess: () => {

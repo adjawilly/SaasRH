@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -12,14 +12,14 @@ export default function HeuresSupplementaires() {
   const { data: heures } = useQuery({
     queryKey: ['heures-supplementaires'],
     queryFn: async () => {
-      const response = await axios.get('/api/gestion-temps/heures-supplementaires')
+      const response = await api.get('/api/gestion-temps/heures-supplementaires')
       return response.data
     },
   })
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await axios.post('/api/gestion-temps/heures-supplementaires', data)
+      const response = await api.post('/api/gestion-temps/heures-supplementaires', data)
       return response.data
     },
     onSuccess: () => {

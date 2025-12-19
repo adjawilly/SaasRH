@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, Target } from 'lucide-react'
 
 export default function ObjectifsList() {
@@ -8,7 +8,7 @@ export default function ObjectifsList() {
   const { data: objectifs } = useQuery({
     queryKey: ['objectifs'],
     queryFn: async () => {
-      const response = await axios.get('/api/evaluation/objectifs')
+      const response = await api.get('/api/evaluation/objectifs')
       return response.data
     },
   })

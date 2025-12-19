@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { History } from 'lucide-react'
 
 export default function HistoriqueFormation() {
   const { data: historique } = useQuery({
     queryKey: ['historique-formation'],
     queryFn: async () => {
-      const response = await axios.get('/api/formation/historique')
+      const response = await api.get('/api/formation/historique')
       return response.data
     },
   })

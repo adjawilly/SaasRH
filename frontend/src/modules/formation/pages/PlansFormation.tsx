@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, GraduationCap } from 'lucide-react'
 
 export default function PlansFormation() {
@@ -8,7 +8,7 @@ export default function PlansFormation() {
   const { data: plans } = useQuery({
     queryKey: ['plans-formation'],
     queryFn: async () => {
-      const response = await axios.get('/api/formation/plans')
+      const response = await api.get('/api/formation/plans')
       return response.data
     },
   })

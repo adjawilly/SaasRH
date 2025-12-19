@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Download, FileText } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -11,14 +11,14 @@ export default function ContratGeneration() {
   const { data: candidature } = useQuery({
     queryKey: ['candidature', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/candidatures/${id}`)
+      const response = await api.get(`/api/recrutement/candidatures/${id}`)
       return response.data
     },
   })
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const response = await axios.post(`/api/recrutement/candidatures/${id}/contrat`)
+      const response = await api.post(`/api/recrutement/candidatures/${id}/contrat`)
       return response.data
     },
     onSuccess: (data) => {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, Calendar, FileText, CheckCircle, Clock } from 'lucide-react'
 
 export default function DemandesList() {
@@ -8,7 +8,7 @@ export default function DemandesList() {
   const { data: demandes } = useQuery({
     queryKey: ['demandes'],
     queryFn: async () => {
-      const response = await axios.get('/api/demande-admin/demandes')
+      const response = await api.get('/api/demande-admin/demandes')
       return response.data
     },
   })

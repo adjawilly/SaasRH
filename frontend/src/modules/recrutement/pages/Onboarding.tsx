@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, CheckCircle, Circle } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -21,14 +21,14 @@ export default function Onboarding() {
   const { data: candidature } = useQuery({
     queryKey: ['candidature', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/candidatures/${id}`)
+      const response = await api.get(`/api/recrutement/candidatures/${id}`)
       return response.data
     },
   })
 
   const mutation = useMutation({
     mutationFn: async (stepId: number) => {
-      const response = await axios.post(`/api/recrutement/candidatures/${id}/onboarding`, {
+      const response = await api.post(`/api/recrutement/candidatures/${id}/onboarding`, {
         stepId,
       })
       return response.data

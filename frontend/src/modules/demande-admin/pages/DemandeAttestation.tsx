@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Download } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -9,7 +9,7 @@ export default function DemandeAttestation() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const response = await axios.post('/api/demande-admin/attestations')
+      const response = await api.post('/api/demande-admin/attestations')
       return response.data
     },
     onSuccess: (data) => {

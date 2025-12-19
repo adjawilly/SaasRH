@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Clock } from 'lucide-react'
 
 export default function SuiviTemps() {
   const { data: temps } = useQuery({
     queryKey: ['suivi-temps'],
     queryFn: async () => {
-      const response = await axios.get('/api/gestion-temps/suivi')
+      const response = await api.get('/api/gestion-temps/suivi')
       return response.data
     },
   })

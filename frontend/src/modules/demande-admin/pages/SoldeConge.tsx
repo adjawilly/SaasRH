@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Calendar } from 'lucide-react'
 
 export default function SoldeConge() {
   const { data: solde } = useQuery({
     queryKey: ['solde-conge'],
     queryFn: async () => {
-      const response = await axios.get('/api/demande-admin/solde-conge')
+      const response = await api.get('/api/demande-admin/solde-conge')
       return response.data
     },
   })

@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -21,7 +21,7 @@ export default function DemandeConge() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await axios.post('/api/demande-admin/conges', data)
+      const response = await api.post('/api/demande-admin/conges', data)
       return response.data
     },
     onSuccess: () => {

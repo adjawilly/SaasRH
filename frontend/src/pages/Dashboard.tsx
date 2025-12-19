@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../api'
 import { Users, FileText, Clock, GraduationCap, TrendingUp, UserCheck } from 'lucide-react'
 
 interface DashboardStats {
@@ -15,7 +15,7 @@ export default function Dashboard() {
   const { data: stats, isLoading } = useQuery<DashboardStats>({
     queryKey: ['dashboard-stats'],
     queryFn: async () => {
-      const response = await axios.get('/api/dashboard/stats')
+      const response = await api.get('/api/dashboard/stats')
       return response.data
     },
   })

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext'
-import axios from 'axios'
+import api from '../api'
 import { User, Mail, Shield } from 'lucide-react'
 
 export default function Profil() {
@@ -9,7 +9,7 @@ export default function Profil() {
   const { data: profilData } = useQuery({
     queryKey: ['profil', user?.id],
     queryFn: async () => {
-      const response = await axios.get('/api/auth/me')
+      const response = await api.get('/api/auth/me')
       return response.data
     },
   })

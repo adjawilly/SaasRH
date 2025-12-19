@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -11,7 +11,7 @@ export default function AutoEvaluation() {
 
   const mutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await axios.post('/api/evaluation/auto-evaluation', data)
+      const response = await api.post('/api/evaluation/auto-evaluation', data)
       return response.data
     },
     onSuccess: () => {

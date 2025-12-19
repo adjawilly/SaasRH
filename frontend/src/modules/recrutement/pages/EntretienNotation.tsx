@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save, Star } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -24,7 +24,7 @@ export default function EntretienNotation() {
   const { data: candidature } = useQuery({
     queryKey: ['candidature', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/candidatures/${id}`)
+      const response = await api.get(`/api/recrutement/candidatures/${id}`)
       return response.data
     },
   })
@@ -41,7 +41,7 @@ export default function EntretienNotation() {
 
   const mutation = useMutation({
     mutationFn: async (data: NotationForm) => {
-      const response = await axios.post(`/api/recrutement/candidatures/${id}/entretien`, data)
+      const response = await api.post(`/api/recrutement/candidatures/${id}/entretien`, data)
       return response.data
     },
     onSuccess: () => {

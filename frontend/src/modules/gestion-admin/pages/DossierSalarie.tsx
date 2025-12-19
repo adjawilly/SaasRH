@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, FileText, User, Briefcase, Calendar } from 'lucide-react'
 
 export default function DossierSalarie() {
@@ -10,7 +10,7 @@ export default function DossierSalarie() {
   const { data: salarie, isLoading } = useQuery({
     queryKey: ['salarie', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/gestion-admin/salaries/${id}/dossier`)
+      const response = await api.get(`/api/gestion-admin/salaries/${id}/dossier`)
       return response.data
     },
   })

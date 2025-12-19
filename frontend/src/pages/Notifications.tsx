@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../api'
 import { Bell, CheckCircle, XCircle, Info } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'

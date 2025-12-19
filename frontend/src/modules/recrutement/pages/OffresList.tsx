@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, ExternalLink, Calendar, Briefcase, Edit } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -23,7 +23,7 @@ export default function OffresList() {
   const { data: offres, isLoading } = useQuery<Offre[]>({
     queryKey: ['offres'],
     queryFn: async () => {
-      const response = await axios.get('/api/recrutement/offres')
+      const response = await api.get('/api/recrutement/offres')
       return response.data
     },
   })

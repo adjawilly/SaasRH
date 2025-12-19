@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Upload, FileSpreadsheet } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -13,7 +13,7 @@ export default function ChargerSalaries() {
     mutationFn: async (file: File) => {
       const formData = new FormData()
       formData.append('file', file)
-      const response = await axios.post('/api/gestion-admin/salaries/charger', formData, {
+      const response = await api.post('/api/gestion-admin/salaries/charger', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       return response.data

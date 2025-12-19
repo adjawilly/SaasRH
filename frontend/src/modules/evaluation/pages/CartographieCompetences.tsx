@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Award } from 'lucide-react'
 
 export default function CartographieCompetences() {
   const { data: competences } = useQuery({
     queryKey: ['cartographie-competences'],
     queryFn: async () => {
-      const response = await axios.get('/api/evaluation/cartographie')
+      const response = await api.get('/api/evaluation/cartographie')
       return response.data
     },
   })

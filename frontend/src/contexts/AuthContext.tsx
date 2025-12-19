@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import api from '../api'
 import { toast } from 'react-toastify'
 
 interface User {
@@ -37,7 +37,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      if (api.defaults && api.defaults.headers) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      }
       fetchUser()
     } else {
       setLoading(false)
@@ -46,11 +48,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('/api/auth/me')
+      const response = await api.get('/api/auth/me')
       setUser(response.data)
-    } catch (error) {
+    } catch (error: any) {
       localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
+      if (api.defaults && api.defaults.headers) {
+        delete api.defaults.headers.common['Authorization']
+      }
     } finally {
       setLoading(false)
     }
@@ -58,59 +62,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password })
+      const response = await api.post('/api/auth/login', { email, password })
       const { token, user } = response.data
       localStorage.setItem('token', token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      if (api.defaults && api.defaults.headers) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      }
       setUser(user)
       toast.success('Connexion réussie')
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur de connexion')
+      toast.error(error.response?.data?.message || error.message || 'Erreur de connexion')
       throw error
     }
   }
 
   const loginWithGoogle = async (token: string) => {
     try {
-      const response = await axios.post('/api/auth/google', { token })
+      const response = await api.post('/api/auth/google', { token })
       const { token: authToken, user } = response.data
       localStorage.setItem('token', authToken)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`
+      if (api.defaults && api.defaults.headers) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`
+      }
       setUser(user)
       toast.success('Connexion réussie')
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur de connexion Google')
+      toast.error(error.response?.data?.message || error.message || 'Erreur de connexion Google')
       throw error
     }
   }
 
   const register = async (data: { email: string; password: string; nom: string; prenom: string }) => {
     try {
-      const response = await axios.post('/api/auth/register', data)
+      const response = await api.post('/api/auth/register', data)
       const { token, user } = response.data
       localStorage.setItem('token', token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      if (api.defaults && api.defaults.headers) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      }
       setUser(user)
       toast.success('Inscription réussie')
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur d\'inscription')
+      toast.error(error.response?.data?.message || error.message || 'Erreur d\'inscription')
       throw error
     }
   }
 
   const logout = () => {
     localStorage.removeItem('token')
-    delete axios.defaults.headers.common['Authorization']
+    if (api.defaults && api.defaults.headers) {
+      delete api.defaults.headers.common['Authorization']
+    }
     setUser(null)
     toast.info('Déconnexion réussie')
   }
 
   const forgotPassword = async (email: string) => {
     try {
-      await axios.post('/api/auth/forgot-password', { email })
+      await api.post('/api/auth/forgot-password', { email })
       toast.success('Email de réinitialisation envoyé')
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'envoi de l\'email')
+      toast.error(error.response?.data?.message || error.message || 'Erreur lors de l\'envoi de l\'email')
       throw error
     }
   }

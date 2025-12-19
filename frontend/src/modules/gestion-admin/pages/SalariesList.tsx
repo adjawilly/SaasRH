@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, Upload, Eye, FileText, UserCheck, Download } from 'lucide-react'
 
 export default function SalariesList() {
@@ -8,7 +8,7 @@ export default function SalariesList() {
   const { data: salaries, isLoading } = useQuery({
     queryKey: ['salaries'],
     queryFn: async () => {
-      const response = await axios.get('/api/gestion-admin/salaries')
+      const response = await api.get('/api/gestion-admin/salaries')
       return response.data
     },
   })

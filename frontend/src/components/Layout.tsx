@@ -20,8 +20,8 @@ import { useState, useRef, useEffect } from 'react'
 
 const menuItems = [
   { path: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard, access: ['administrateur', 'compte_rh', 'compte_salarie'] },
-  { path: '/recrutement', label: 'Recrutement', icon: Users, access: ['administrateur', 'compte_rh'] },
-  { path: '/gestion-admin', label: 'Gestion Administratives', icon: FileText, access: ['administrateur', 'compte_rh'] },
+  { path: '/recrutement', label: 'Recrutement', icon: Users, access: ['compte_rh'] },
+  { path: '/gestion-admin', label: 'Gestion Administratives', icon: FileText, access: ['compte_rh'] },
   { path: '/demande-admin', label: 'Demande Administratives', icon: ClipboardList, access: ['administrateur', 'compte_rh', 'compte_salarie'] },
   { path: '/evaluation', label: 'Évaluation & Compétences', icon: Award, access: ['administrateur', 'compte_rh', 'compte_salarie'] },
   { path: '/gestion-temps', label: 'Gestion des Temps', icon: Clock, access: ['administrateur', 'compte_rh', 'compte_salarie'] },

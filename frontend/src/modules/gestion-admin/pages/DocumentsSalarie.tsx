@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Upload, Download, Trash2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -14,7 +14,7 @@ export default function DocumentsSalarie() {
   const { data: salarie } = useQuery({
     queryKey: ['salarie', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/gestion-admin/salaries/${id}`)
+      const response = await api.get(`/api/gestion-admin/salaries/${id}`)
       return response.data
     },
   })
@@ -22,7 +22,7 @@ export default function DocumentsSalarie() {
   const { data: documents, refetch } = useQuery({
     queryKey: ['documents', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/gestion-admin/salaries/${id}/documents`)
+      const response = await api.get(`/api/gestion-admin/salaries/${id}/documents`)
       return response.data
     },
   })
@@ -32,7 +32,7 @@ export default function DocumentsSalarie() {
       const formData = new FormData()
       formData.append('file', data.file)
       formData.append('type', data.type)
-      const response = await axios.post(`/api/gestion-admin/salaries/${id}/documents`, formData, {
+      const response = await api.post(`/api/gestion-admin/salaries/${id}/documents`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
       return response.data
@@ -50,7 +50,7 @@ export default function DocumentsSalarie() {
 
   const deleteMutation = useMutation({
     mutationFn: async (docId: string) => {
-      await axios.delete(`/api/gestion-admin/salaries/${id}/documents/${docId}`)
+      await api.delete(`/api/gestion-admin/salaries/${id}/documents/${docId}`)
     },
     onSuccess: () => {
       toast.success('Document supprimé')

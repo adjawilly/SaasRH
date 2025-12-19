@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -28,7 +28,7 @@ export default function CreateOffre() {
   const { data: domaines } = useQuery({
     queryKey: ['domaines'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/domaines')
+      const response = await api.get('/api/parametrage/domaines')
       return response.data
     },
   })
@@ -36,7 +36,7 @@ export default function CreateOffre() {
   const { data: competences } = useQuery({
     queryKey: ['competences'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/competences')
+      const response = await api.get('/api/parametrage/competences')
       return response.data
     },
   })
@@ -44,7 +44,7 @@ export default function CreateOffre() {
   const { data: niveauxEtude } = useQuery({
     queryKey: ['niveaux-etude'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/niveaux-etude')
+      const response = await api.get('/api/parametrage/niveaux-etude')
       return response.data
     },
   })
@@ -52,7 +52,7 @@ export default function CreateOffre() {
   const { data: offreData } = useQuery({
     queryKey: ['offre', id],
     queryFn: async () => {
-      const response = await axios.get(`/api/recrutement/offres/${id}`)
+      const response = await api.get(`/api/recrutement/offres/${id}`)
       return response.data
     },
     enabled: isEditMode,
@@ -82,10 +82,10 @@ export default function CreateOffre() {
   const mutation = useMutation({
     mutationFn: async (data: OffreForm) => {
       if (isEditMode) {
-        const response = await axios.put(`/api/recrutement/offres/${id}`, data)
+        const response = await api.put(`/api/recrutement/offres/${id}`, data)
         return response.data
       } else {
-        const response = await axios.post('/api/recrutement/offres', data)
+        const response = await api.post('/api/recrutement/offres', data)
         return response.data
       }
     },

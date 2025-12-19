@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { Plus, Edit, Trash2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useState } from 'react'
@@ -11,14 +11,14 @@ export default function Competences() {
   const { data: competences, refetch } = useQuery({
     queryKey: ['competences'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/competences')
+      const response = await api.get('/api/parametrage/competences')
       return response.data
     },
   })
 
   const createMutation = useMutation({
     mutationFn: async (data: { libelle: string }) => {
-      const response = await axios.post('/api/parametrage/competences', data)
+      const response = await api.post('/api/parametrage/competences', data)
       return response.data
     },
     onSuccess: () => {
@@ -30,7 +30,7 @@ export default function Competences() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: { id: string; libelle: string }) => {
-      const response = await axios.put(`/api/parametrage/competences/${data.id}`, { libelle: data.libelle })
+      const response = await api.put(`/api/parametrage/competences/${data.id}`, { libelle: data.libelle })
       return response.data
     },
     onSuccess: () => {
@@ -43,7 +43,7 @@ export default function Competences() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await axios.delete(`/api/parametrage/competences/${id}`)
+      await api.delete(`/api/parametrage/competences/${id}`)
     },
     onSuccess: () => {
       toast.success('Compétence supprimée')

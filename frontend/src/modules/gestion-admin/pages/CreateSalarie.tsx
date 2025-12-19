@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import axios from 'axios'
+import api from '../../../api'
 import { ArrowLeft, Save } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -24,7 +24,7 @@ export default function CreateSalarie() {
   const { data: fonctions } = useQuery({
     queryKey: ['fonctions'],
     queryFn: async () => {
-      const response = await axios.get('/api/parametrage/fonctions')
+      const response = await api.get('/api/parametrage/fonctions')
       return response.data
     },
   })
@@ -35,7 +35,7 @@ export default function CreateSalarie() {
 
   const mutation = useMutation({
     mutationFn: async (data: SalarieForm) => {
-      const response = await axios.post('/api/gestion-admin/salaries', data)
+      const response = await api.post('/api/gestion-admin/salaries', data)
       return response.data
     },
     onSuccess: () => {
