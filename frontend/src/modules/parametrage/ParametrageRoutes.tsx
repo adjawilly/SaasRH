@@ -5,6 +5,7 @@ import Domaines from './pages/Domaines'
 import Fonctions from './pages/Fonctions'
 import NiveauxEtude from './pages/NiveauxEtude'
 import Profils from './pages/Profils'
+import MotifsAbsence from './pages/MotifsAbsence'
 
 export default function ParametrageRoutes() {
   return (
@@ -16,6 +17,7 @@ export default function ParametrageRoutes() {
         <Route path="fonctions" element={<Fonctions />} />
         <Route path="niveaux-etude" element={<NiveauxEtude />} />
         <Route path="profils" element={<Profils />} />
+        <Route path="motifs-absence" element={<MotifsAbsence />} />
       </Route>
     </Routes>
   )

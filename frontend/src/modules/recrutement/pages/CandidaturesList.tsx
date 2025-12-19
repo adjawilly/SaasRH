@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import api from '../../../api'
-import { Eye, Filter, Download } from 'lucide-react'
+import { Eye, Filter, Download, UserCheck } from 'lucide-react'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
 
@@ -31,7 +31,7 @@ export default function CandidaturesList() {
       const url = offreId 
         ? `/api/recrutement/candidatures?offre=${offreId}`
         : '/api/recrutement/candidatures'
-      const response = await api.get(url)
+      const response = await (api as any).get(url)
       return response.data
     },
   })
@@ -59,28 +59,48 @@ export default function CandidaturesList() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Candidatures</h1>
-          <p className="text-gray-600 mt-2">Gérez les candidatures reçues</p>
+          <h1 
+            className="text-2xl md:text-3xl font-bold flex items-center space-x-2"
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            <UserCheck size={28} style={{ color: '#2F5FD7' }} />
+            <span>Candidatures</span>
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">Gérez les candidatures reçues</p>
         </div>
         <div className="flex space-x-2">
-          <button className="btn-secondary flex items-center space-x-2">
-            <Filter size={20} />
+          <button 
+            className="px-3 py-2 md:px-4 md:py-2.5 rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm md:text-base font-medium"
+            style={{ borderColor: '#2F5FD7', color: '#2F5FD7' }}
+          >
+            <Filter size={18} />
             <span>Filtrer</span>
           </button>
-          <button className="btn-secondary flex items-center space-x-2">
-            <Download size={20} />
+          <button 
+            className="px-3 py-2 md:px-4 md:py-2.5 rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm md:text-base font-medium"
+            style={{ borderColor: '#2F5FD7', color: '#2F5FD7' }}
+          >
+            <Download size={18} />
             <span>Exporter</span>
           </button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">Chargement...</div>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: '#2F5FD7' }}></div>
+        </div>
       ) : (
-        <div className="card overflow-x-auto">
+        <div className="card border-2 border-blue-200 bg-blue-50/30 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -104,7 +124,21 @@ export default function CandidaturesList() {
                   <td className="p-4">{candidature.offreLibelle}</td>
                   <td className="p-4">{candidature.domaine}</td>
                   <td className="p-4">
-                    {format(new Date(candidature.dateDepot), 'dd MMM yyyy', { locale: fr })}
+                    {candidature.dateDepot ? (
+                      (() => {
+                        try {
+                          const date = new Date(candidature.dateDepot)
+                          if (isNaN(date.getTime())) {
+                            return <span className="text-gray-400">Date invalide</span>
+                          }
+                          return format(date, 'dd MMM yyyy', { locale: fr })
+                        } catch {
+                          return <span className="text-gray-400">Date invalide</span>
+                        }
+                      })()
+                    ) : (
+                      <span className="text-gray-400">Non renseigné</span>
+                    )}
                   </td>
                   <td className="p-4">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatutColor(candidature.statut)}`}>
@@ -114,9 +148,10 @@ export default function CandidaturesList() {
                   <td className="p-4">
                     <button
                       onClick={() => navigate(`/recrutement/candidatures/${candidature.id}`)}
-                      className="p-2 hover:bg-gray-100 rounded-lg"
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      style={{ color: '#2F5FD7' }}
                     >
-                      <Eye size={20} />
+                      <Eye size={18} />
                     </button>
                   </td>
                 </tr>

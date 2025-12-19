@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import api from '../../../api'
-import { ArrowLeft, Save } from 'lucide-react'
-import { toast } from 'react-toastify'
+import { ArrowLeft, Save, Briefcase } from 'lucide-react'
+import { useNotification } from '../../../contexts/NotificationContext'
 
 const offreSchema = z.object({
   libelleOffre: z.string().min(3, 'Le libellé doit contenir au moins 3 caractères'),
@@ -24,11 +24,12 @@ export default function CreateOffre() {
   const navigate = useNavigate()
   const { id } = useParams()
   const isEditMode = !!id
+  const notification = useNotification()
 
   const { data: domaines } = useQuery({
     queryKey: ['domaines'],
     queryFn: async () => {
-      const response = await api.get('/api/parametrage/domaines')
+      const response = await (api as any).get('/api/parametrage/domaines')
       return response.data
     },
   })
@@ -36,7 +37,7 @@ export default function CreateOffre() {
   const { data: competences } = useQuery({
     queryKey: ['competences'],
     queryFn: async () => {
-      const response = await api.get('/api/parametrage/competences')
+      const response = await (api as any).get('/api/parametrage/competences')
       return response.data
     },
   })
@@ -44,7 +45,7 @@ export default function CreateOffre() {
   const { data: niveauxEtude } = useQuery({
     queryKey: ['niveaux-etude'],
     queryFn: async () => {
-      const response = await api.get('/api/parametrage/niveaux-etude')
+      const response = await (api as any).get('/api/parametrage/niveaux-etude')
       return response.data
     },
   })
@@ -52,7 +53,7 @@ export default function CreateOffre() {
   const { data: offreData } = useQuery({
     queryKey: ['offre', id],
     queryFn: async () => {
-      const response = await api.get(`/api/recrutement/offres/${id}`)
+      const response = await (api as any).get(`/api/recrutement/offres/${id}`)
       return response.data
     },
     enabled: isEditMode,
@@ -82,19 +83,25 @@ export default function CreateOffre() {
   const mutation = useMutation({
     mutationFn: async (data: OffreForm) => {
       if (isEditMode) {
-        const response = await api.put(`/api/recrutement/offres/${id}`, data)
+        const response = await (api as any).put(`/api/recrutement/offres/${id}`, data)
         return response.data
       } else {
-        const response = await api.post('/api/recrutement/offres', data)
+        const response = await (api as any).post('/api/recrutement/offres', data)
         return response.data
       }
     },
     onSuccess: () => {
-      toast.success(isEditMode ? 'Offre modifiée avec succès' : 'Offre créée avec succès')
+      notification.success(
+        isEditMode ? 'Offre modifiée avec succès' : 'Offre créée avec succès',
+        'L\'offre a été enregistrée avec succès'
+      )
       navigate('/recrutement')
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || `Erreur lors de ${isEditMode ? 'la modification' : 'la création'}`)
+      notification.error(
+        'Erreur',
+        error.response?.data?.message || `Erreur lors de ${isEditMode ? 'la modification' : 'la création'}`
+      )
     },
   })
 
@@ -108,30 +115,41 @@ export default function CreateOffre() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-4">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex items-center space-x-3 md:space-x-4">
         <button
           onClick={() => navigate('/recrutement')}
-          className="p-2 hover:bg-gray-100 rounded-lg"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          style={{ color: '#2F5FD7' }}
         >
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            {isEditMode ? 'Modifier l\'offre d\'emploi' : 'Nouvelle offre d\'emploi'}
+          <h1 
+            className="text-2xl md:text-3xl font-bold flex items-center space-x-2"
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            <Briefcase size={28} style={{ color: '#2F5FD7' }} />
+            <span>{isEditMode ? 'Modifier l\'offre d\'emploi' : 'Nouvelle offre d\'emploi'}</span>
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">
             {isEditMode ? 'Modifiez les informations de l\'offre' : 'Créez une nouvelle offre d\'emploi'}
           </p>
           {isEditMode && offreData && (
-            <p className="text-sm text-gray-500 mt-1">
-              Lien de publication : <a href={offreData.lienOffre} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">{offreData.lienOffre}</a>
+            <p className="text-xs md:text-sm text-gray-500 mt-1">
+              Lien de publication : <a href={offreData.lienOffre} target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: '#2F5FD7' }}>{offreData.lienOffre}</a>
             </p>
           )}
         </div>
       </div>
 
-      <form onSubmit={form.handleSubmit(onSubmit)} className="card space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="card border-2 border-blue-200 bg-blue-50/30 space-y-4 md:space-y-6">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Libellé de l'offre *
@@ -201,17 +219,18 @@ export default function CreateOffre() {
             Maintenez Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs compétences
           </p>
           {form.watch('competences').length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2 md:mt-3 flex flex-wrap gap-1.5 md:gap-2">
               {form.watch('competences').map((comp) => (
                 <span
                   key={comp}
-                  className="px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-sm flex items-center space-x-2"
+                  className="px-2 py-1 bg-blue-100 text-blue-700 border-2 border-blue-200 rounded-lg text-xs md:text-sm flex items-center space-x-1.5"
                 >
                   <span>{comp}</span>
                   <button
                     type="button"
                     onClick={() => removeCompetence(comp)}
-                    className="hover:text-primary-900 font-bold"
+                    className="hover:text-blue-900 font-bold text-base leading-none"
+                    style={{ color: '#2F5FD7' }}
                   >
                     ×
                   </button>
@@ -269,16 +288,25 @@ export default function CreateOffre() {
           </div>
         </div>
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex flex-col sm:flex-row justify-end gap-2 md:gap-4 pt-4 border-t border-gray-200">
           <button
             type="button"
             onClick={() => navigate('/recrutement')}
-            className="btn-secondary"
+            className="px-4 py-2 md:px-6 md:py-2.5 rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors font-medium text-sm md:text-base"
+            style={{ borderColor: '#2F5FD7', color: '#2F5FD7' }}
           >
             Annuler
           </button>
-          <button type="submit" className="btn-primary flex items-center space-x-2" disabled={mutation.isPending}>
-            <Save size={20} />
+          <button 
+            type="submit" 
+            className="px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-semibold text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center space-x-2 text-sm md:text-base" 
+            disabled={mutation.isPending}
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+              opacity: mutation.isPending ? 0.6 : 1
+            }}
+          >
+            <Save size={18} />
             <span>{mutation.isPending ? 'Enregistrement...' : 'Enregistrer'}</span>
           </button>
         </div>

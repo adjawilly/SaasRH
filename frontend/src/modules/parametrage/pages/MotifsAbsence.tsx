@@ -2,10 +2,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import api from '../../../api'
-import { Users, Plus, Edit2, Trash2, X, Save } from 'lucide-react'
+import { CalendarX, Plus, Edit2, Trash2, X, Save } from 'lucide-react'
 import { useNotification } from '../../../contexts/NotificationContext'
 
-export default function Fonctions() {
+export default function MotifsAbsence() {
   const notification = useNotification()
   const queryClient = useQueryClient()
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -16,64 +16,63 @@ export default function Fonctions() {
     }
   })
 
-  const { data: fonctions, isLoading } = useQuery({
-    queryKey: ['fonctions'],
+  const { data: motifs, isLoading } = useQuery({
+    queryKey: ['motifs-absence'],
     queryFn: async () => {
-      const response = await (api as any).get('/api/parametrage/fonctions')
+      const response = await (api as any).get('/api/parametrage/motifs-absence')
       return response.data
     },
   })
 
   const createMutation = useMutation({
     mutationFn: async (libelle: string) => {
-      const response = await (api as any).post('/api/parametrage/fonctions', { libelle })
+      const response = await (api as any).post('/api/parametrage/motifs-absence', { libelle })
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fonctions'] })
-      notification.success('Fonction créée', 'La fonction a été créée avec succès')
+      queryClient.invalidateQueries({ queryKey: ['motifs-absence'] })
+      notification.success('Motif créé', 'Le motif d\'absence a été créé avec succès')
       form.reset()
       setShowForm(false)
     },
     onError: (error: any) => {
-      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la création de la fonction')
+      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la création du motif')
     },
   })
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, libelle }: { id: string; libelle: string }) => {
-      const response = await (api as any).put(`/api/parametrage/fonctions/${id}`, { libelle })
+      const response = await (api as any).put(`/api/parametrage/motifs-absence/${id}`, { libelle })
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fonctions'] })
-      notification.success('Fonction modifiée', 'La fonction a été modifiée avec succès')
+      queryClient.invalidateQueries({ queryKey: ['motifs-absence'] })
+      notification.success('Motif modifié', 'Le motif d\'absence a été modifié avec succès')
       setEditingId(null)
       form.reset()
-      setShowForm(false)
     },
     onError: (error: any) => {
-      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la modification de la fonction')
+      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la modification du motif')
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const response = await (api as any).delete(`/api/parametrage/fonctions/${id}`)
+      const response = await (api as any).delete(`/api/parametrage/motifs-absence/${id}`)
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fonctions'] })
-      notification.success('Fonction supprimée', 'La fonction a été supprimée avec succès')
+      queryClient.invalidateQueries({ queryKey: ['motifs-absence'] })
+      notification.success('Motif supprimé', 'Le motif d\'absence a été supprimé avec succès')
     },
     onError: (error: any) => {
-      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la suppression de la fonction')
+      notification.error('Erreur', error.response?.data?.message || 'Erreur lors de la suppression du motif')
     },
   })
 
-  const handleEdit = (fonction: any) => {
-    setEditingId(fonction.id)
-    form.setValue('libelle', fonction.libelle)
+  const handleEdit = (motif: any) => {
+    setEditingId(motif.id)
+    form.setValue('libelle', motif.libelle)
     setShowForm(true)
   }
 
@@ -105,10 +104,10 @@ export default function Fonctions() {
               backgroundClip: 'text'
             }}
           >
-            <Users size={22} style={{ color: '#2F5FD7' }} />
-            <span>Fonctions</span>
+            <CalendarX size={22} style={{ color: '#2F5FD7' }} />
+            <span>Motifs d'absence</span>
           </h2>
-          <p className="text-xs md:text-sm text-gray-600 mt-1">Gérez les fonctions disponibles</p>
+          <p className="text-xs md:text-sm text-gray-600 mt-1">Gérez les motifs d'absence disponibles</p>
         </div>
         {!showForm && (
           <button
@@ -123,7 +122,7 @@ export default function Fonctions() {
             }}
           >
             <Plus size={16} />
-            <span>Nouvelle fonction</span>
+            <span>Nouveau motif</span>
           </button>
         )}
       </div>
@@ -134,13 +133,13 @@ export default function Fonctions() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Libellé de la fonction *
+                Libellé du motif *
               </label>
               <input
                 {...form.register('libelle', { required: true })}
                 type="text"
                 className="w-full input-field bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500"
-                placeholder="Ex: Développeur, Chef de projet..."
+                placeholder="Ex: Maladie, Congé payé, RTT..."
               />
             </div>
             <div className="flex justify-end space-x-3">
@@ -169,20 +168,20 @@ export default function Fonctions() {
         </div>
       )}
 
-      {/* Liste des fonctions */}
+      {/* Liste des motifs */}
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: '#2F5FD7' }}></div>
         </div>
       ) : (
         <div className="card border-2 border-blue-200 bg-blue-50/30">
-          {fonctions && fonctions.length > 0 ? (
+          {motifs && motifs.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b-2 border-gray-200">
                     <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      Fonction
+                      Motif
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                       Actions
@@ -190,15 +189,15 @@ export default function Fonctions() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {fonctions.map((f: any) => (
-                    <tr key={f.id} className="hover:bg-gray-50 transition-colors">
+                  {motifs.map((motif: any) => (
+                    <tr key={motif.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <span className="text-sm font-medium text-gray-900">{f.libelle}</span>
+                        <span className="text-sm font-medium text-gray-900">{motif.libelle}</span>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
                           <button
-                            onClick={() => handleEdit(f)}
+                            onClick={() => handleEdit(motif)}
                             className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-700 transition-colors"
                             title="Modifier"
                           >
@@ -206,8 +205,8 @@ export default function Fonctions() {
                           </button>
                           <button
                             onClick={() => {
-                              if (window.confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?')) {
-                                deleteMutation.mutate(f.id)
+                              if (window.confirm('Êtes-vous sûr de vouloir supprimer ce motif ?')) {
+                                deleteMutation.mutate(motif.id)
                               }
                             }}
                             className="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-700 transition-colors"
@@ -225,8 +224,8 @@ export default function Fonctions() {
             </div>
           ) : (
             <div className="text-center py-8 text-gray-500">
-              <Users size={48} className="mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Aucune fonction disponible</p>
+              <CalendarX size={48} className="mx-auto mb-2 opacity-50" />
+              <p className="text-sm">Aucun motif d'absence disponible</p>
             </div>
           )}
         </div>
@@ -234,3 +233,4 @@ export default function Fonctions() {
     </div>
   )
 }
+

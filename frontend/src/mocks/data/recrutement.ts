@@ -196,10 +196,20 @@ export const mockRecrutement = {
 
   getCandidatures: async (offreId?: string) => {
     await delay(400)
-    if (offreId) {
-      return mockCandidatures.filter(c => c.offreId === offreId)
-    }
-    return mockCandidatures
+    let candidatures = offreId 
+      ? mockCandidatures.filter(c => c.offreId === offreId)
+      : mockCandidatures
+    
+    // Ajouter dateDepot et offreLibelle pour chaque candidature
+    return candidatures.map(c => {
+      const offre = mockOffres.find(o => o.id === c.offreId)
+      return {
+        ...c,
+        dateDepot: c.createdAt,
+        offreLibelle: offre?.libelleOffre || 'Offre inconnue',
+        competences: Array.isArray(c.competences) ? c.competences : (c.competences ? c.competences.split(',') : [])
+      }
+    })
   },
 
   getCandidature: async (id: string) => {
@@ -207,7 +217,15 @@ export const mockRecrutement = {
     const candidature = mockCandidatures.find(c => c.id === id)
     if (!candidature) throw new Error('Candidature non trouvée')
     const offre = mockOffres.find(o => o.id === candidature.offreId)
-    return { ...candidature, offre }
+    return { 
+      ...candidature, 
+      offre,
+      dateDepot: candidature.createdAt,
+      offreLibelle: offre?.libelleOffre || 'Offre inconnue',
+      competences: Array.isArray(candidature.competences) 
+        ? candidature.competences 
+        : (candidature.competences ? candidature.competences.split(',') : [])
+    }
   },
 
   createCandidature: async (data: Partial<MockCandidature>) => {

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import api from '../api'
-import { toast } from 'react-toastify'
 
 interface User {
   id: string
@@ -69,9 +68,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       }
       setUser(user)
-      toast.success('Connexion réussie')
+      // Notification gérée dans le composant LoginFormLeft
     } catch (error: any) {
-      toast.error(error.response?.data?.message || error.message || 'Erreur de connexion')
+      // Error géré dans le composant LoginFormLeft
       throw error
     }
   }
@@ -85,9 +84,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         api.defaults.headers.common['Authorization'] = `Bearer ${authToken}`
       }
       setUser(user)
-      toast.success('Connexion réussie')
+      // Notification gérée dans le composant LoginFormLeft
     } catch (error: any) {
-      toast.error(error.response?.data?.message || error.message || 'Erreur de connexion Google')
+      // Error géré dans le composant LoginFormLeft
       throw error
     }
   }
@@ -101,9 +100,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`
       }
       setUser(user)
-      toast.success('Inscription réussie')
+      // Notification gérée dans le composant LoginFormLeft
     } catch (error: any) {
-      toast.error(error.response?.data?.message || error.message || 'Erreur d\'inscription')
+      // Error géré dans le composant LoginFormLeft
       throw error
     }
   }
@@ -114,15 +113,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       delete api.defaults.headers.common['Authorization']
     }
     setUser(null)
-    toast.info('Déconnexion réussie')
+    // Notification gérée dans le composant Header
   }
 
   const forgotPassword = async (email: string) => {
     try {
       await api.post('/api/auth/forgot-password', { email })
-      toast.success('Email de réinitialisation envoyé')
+      // Notification gérée dans le composant Login
     } catch (error: any) {
-      toast.error(error.response?.data?.message || error.message || 'Erreur lors de l\'envoi de l\'email')
+      // Error géré dans le composant Login
       throw error
     }
   }

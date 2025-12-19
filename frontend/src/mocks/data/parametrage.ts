@@ -44,6 +44,14 @@ export const mockProfils: MockParametrage[] = [
   { id: '3', libelle: 'compte_salarie', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
 ]
 
+export const mockMotifsAbsence: MockParametrage[] = [
+  { id: '1', libelle: 'Maladie', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+  { id: '2', libelle: 'Congé payé', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+  { id: '3', libelle: 'RTT', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+  { id: '4', libelle: 'Congé sans solde', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+  { id: '5', libelle: 'Formation', createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z' },
+]
+
 const createCRUD = (items: MockParametrage[]) => ({
   getAll: async () => {
     await delay(300)
@@ -93,5 +101,6 @@ export const mockParametrage = {
   fonctions: createCRUD(mockFonctions),
   niveauxEtude: createCRUD(mockNiveauxEtude),
   profils: createCRUD(mockProfils),
+  motifsAbsence: createCRUD(mockMotifsAbsence),
 }
 

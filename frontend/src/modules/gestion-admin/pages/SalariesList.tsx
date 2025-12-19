@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import api from '../../../api'
-import { Plus, Upload, Eye, FileText, UserCheck, Download } from 'lucide-react'
+import { Plus, Upload, Eye, FileText, UserCheck, Download, Users } from 'lucide-react'
 
 export default function SalariesList() {
   const navigate = useNavigate()
@@ -14,34 +14,52 @@ export default function SalariesList() {
   })
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Salariés</h1>
-          <p className="text-gray-600 mt-2">Gestion des salariés</p>
+          <h1 
+            className="text-2xl md:text-3xl font-bold flex items-center space-x-2"
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            <Users size={28} style={{ color: '#2F5FD7' }} />
+            <span>Salariés</span>
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">Gestion des salariés</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => navigate('/gestion-admin/charger')}
-            className="btn-secondary flex items-center space-x-2"
+            className="px-3 py-2 md:px-4 md:py-2.5 rounded-lg border-2 bg-white hover:bg-gray-50 transition-colors flex items-center space-x-2 text-sm md:text-base font-medium"
+            style={{ borderColor: '#2F5FD7', color: '#2F5FD7' }}
           >
-            <Upload size={20} />
+            <Upload size={18} />
             <span>Charger depuis Excel</span>
           </button>
           <button
             onClick={() => navigate('/gestion-admin/nouveau')}
-            className="btn-primary flex items-center space-x-2"
+            className="px-3 py-2 md:px-4 md:py-2.5 rounded-lg font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2 text-sm md:text-base"
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)'
+            }}
           >
-            <Plus size={20} />
+            <Plus size={18} />
             <span>Nouveau salarié</span>
           </button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12">Chargement...</div>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: '#2F5FD7' }}></div>
+        </div>
       ) : (
-        <div className="card overflow-x-auto">
+        <div className="card border-2 border-blue-200 bg-blue-50/30 overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -75,24 +93,26 @@ export default function SalariesList() {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => navigate(`/gestion-admin/dossier/${salarie.id}`)}
-                        className="p-2 hover:bg-gray-100 rounded-lg"
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                        style={{ color: '#2F5FD7' }}
                         title="Voir le dossier"
                       >
-                        <Eye size={20} />
+                        <Eye size={18} />
                       </button>
                       <button
                         onClick={() => navigate(`/gestion-admin/affectation/${salarie.id}`)}
-                        className="p-2 hover:bg-blue-100 rounded-lg text-blue-600"
+                        className="p-2 hover:bg-blue-100 rounded-lg transition-colors"
+                        style={{ color: '#2F5FD7' }}
                         title="Affectation"
                       >
-                        <UserCheck size={20} />
+                        <UserCheck size={18} />
                       </button>
                       <button
                         onClick={() => navigate(`/gestion-admin/fiche-poste/${salarie.id}`)}
-                        className="p-2 hover:bg-green-100 rounded-lg text-green-600"
+                        className="p-2 hover:bg-green-100 rounded-lg text-green-600 transition-colors"
                         title="Générer fiche de poste"
                       >
-                        <Download size={20} />
+                        <Download size={18} />
                       </button>
                     </div>
                   </td>

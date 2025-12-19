@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useAuth } from '../contexts/AuthContext'
-import { Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { useAuth } from '../../../contexts/AuthContext'
+import { useNotification } from '../../../contexts/NotificationContext'
+import { Mail, Lock, User } from 'lucide-react'
 
 const loginSchema = z.object({
   email: z.string().email('Email invalide'),
@@ -25,11 +26,14 @@ const registerSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 type RegisterForm = z.infer<typeof registerSchema>
 
-export default function Login() {
+interface LoginFormLeftProps {
+  onShowForgotPassword: () => void
+}
+
+export default function LoginFormLeft({ onShowForgotPassword }: LoginFormLeftProps) {
   const [isLogin, setIsLogin] = useState(true)
-  const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [forgotEmail, setForgotEmail] = useState('')
-  const { login, register, forgotPassword } = useAuth()
+  const { login, register } = useAuth()
+  const notification = useNotification()
   const navigate = useNavigate()
 
   const loginForm = useForm<LoginForm>({
@@ -43,9 +47,10 @@ export default function Login() {
   const onLoginSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password)
+      notification.success('Connexion réussie', 'Vous êtes maintenant connecté')
       navigate('/dashboard')
-    } catch (error) {
-      // Error handled in AuthContext
+    } catch (error: any) {
+      notification.error('Erreur de connexion', error.response?.data?.message || error.message || 'Identifiants invalides')
     }
   }
 
@@ -57,9 +62,10 @@ export default function Login() {
         nom: data.nom,
         prenom: data.prenom,
       })
+      notification.success('Inscription réussie', 'Votre compte a été créé avec succès')
       navigate('/dashboard')
-    } catch (error) {
-      // Error handled in AuthContext
+    } catch (error: any) {
+      notification.error('Erreur d\'inscription', error.response?.data?.message || error.message || 'Une erreur est survenue')
     }
   }
 
@@ -68,58 +74,17 @@ export default function Login() {
     window.location.href = '/api/auth/google'
   }
 
-  const handleForgotPassword = async () => {
-    try {
-      await forgotPassword(forgotEmail)
-      setShowForgotPassword(false)
-      setForgotEmail('')
-    } catch (error) {
-      // Error handled in AuthContext
-    }
-  }
-
-  if (showForgotPassword) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Mot de passe oublié</h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                className="input-field"
-                placeholder="votre@email.com"
-              />
-            </div>
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowForgotPassword(false)}
-                className="btn-secondary flex-1"
-              >
-                Annuler
-              </button>
-              <button
-                onClick={handleForgotPassword}
-                className="btn-primary flex-1"
-              >
-                Envoyer
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-primary p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+    <div className="w-full lg:w-1/2 flex items-center justify-center bg-white p-4 lg:p-8">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <img 
+              src="/logo.png" 
+              alt="SaansRH Logo" 
+              className="h-20 w-auto object-contain rounded-xl"
+            />
+          </div>
           <h1 className="text-3xl font-bold text-gray-800 mb-2">SaansRH</h1>
           <p className="text-gray-600">
             {isLogin ? 'Connectez-vous à votre compte' : 'Créez votre compte'}
@@ -166,13 +131,19 @@ export default function Login() {
 
             <button
               type="button"
-              onClick={() => setShowForgotPassword(true)}
-              className="text-sm text-primary-600 hover:text-primary-700 text-right w-full"
+              onClick={onShowForgotPassword}
+              className="text-sm text-right w-full font-medium link-blue"
             >
               Mot de passe oublié ?
             </button>
 
-            <button type="submit" className="btn-primary w-full">
+            <button 
+              type="submit" 
+              className="w-full text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)'
+              }}
+            >
               Se connecter
             </button>
 
@@ -216,7 +187,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setIsLogin(false)}
-                className="text-primary-600 hover:text-primary-700 font-semibold"
+                className="font-semibold link-blue"
               >
                 S'inscrire
               </button>
@@ -316,7 +287,13 @@ export default function Login() {
               )}
             </div>
 
-            <button type="submit" className="btn-primary w-full">
+            <button 
+              type="submit" 
+              className="w-full text-white px-6 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)'
+              }}
+            >
               S'inscrire
             </button>
 
@@ -360,7 +337,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setIsLogin(true)}
-                className="text-primary-600 hover:text-primary-700 font-semibold"
+                className="font-semibold link-blue"
               >
                 Se connecter
               </button>
@@ -371,4 +348,3 @@ export default function Login() {
     </div>
   )
 }
-

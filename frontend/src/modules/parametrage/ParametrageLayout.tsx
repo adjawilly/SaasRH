@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { Award, Briefcase, GraduationCap, Users, Settings } from 'lucide-react'
+import { Award, Briefcase, GraduationCap, Users, Settings, CalendarX } from 'lucide-react'
 
 const tabs = [
   { path: '/parametrage/competences', label: 'Compétences', icon: Award },
@@ -7,6 +7,7 @@ const tabs = [
   { path: '/parametrage/fonctions', label: 'Fonctions', icon: Users },
   { path: '/parametrage/niveaux-etude', label: 'Niveaux Étude', icon: GraduationCap },
   { path: '/parametrage/profils', label: 'Profils Utilisateurs', icon: Settings },
+  { path: '/parametrage/motifs-absence', label: 'Motifs d\'absence', icon: CalendarX },
 ]
 
 export default function ParametrageLayout() {
@@ -15,13 +16,23 @@ export default function ParametrageLayout() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-800">Paramétrage</h1>
-        <p className="text-gray-600 mt-2">Configurez les paramètres de l'application</p>
+        <h1 
+          className="text-xl md:text-2xl font-bold"
+          style={{
+            background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}
+        >
+          Paramétrage
+        </h1>
+        <p className="text-xs md:text-sm text-gray-600 mt-1">Configurez les paramètres de l'application</p>
       </div>
 
       {/* Navigation tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="flex space-x-1" aria-label="Tabs">
+      <div className="border-b border-gray-200 overflow-x-auto">
+        <nav className="flex space-x-1 min-w-max" aria-label="Tabs">
           {tabs.map((tab) => {
             const Icon = tab.icon
             const isActive = location.pathname === tab.path || 
@@ -31,15 +42,20 @@ export default function ParametrageLayout() {
                 key={tab.path}
                 to={tab.path}
                 className={`
-                  flex items-center space-x-2 px-6 py-3 border-b-2 font-medium text-sm transition-colors
+                  flex items-center space-x-1.5 px-2.5 py-1.5 border-b-2 font-medium text-xs transition-colors whitespace-nowrap
                   ${
                     isActive
-                      ? 'border-primary-500 text-primary-600 bg-primary-50'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-transparent'
+                      : 'border-transparent hover:border-gray-300'
                   }
                 `}
+                style={isActive ? {
+                  color: '#2F5FD7'
+                } : {
+                  color: '#6B7280'
+                }}
               >
-                <Icon size={18} />
+                <Icon size={14} style={isActive ? { color: '#2F5FD7' } : { color: '#6B7280' }} />
                 <span>{tab.label}</span>
               </Link>
             )

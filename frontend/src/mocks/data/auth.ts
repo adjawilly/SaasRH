@@ -97,5 +97,17 @@ export const mockAuth = {
     }
     return { message: 'Email de réinitialisation envoyé' }
   },
+
+  updatePassword: async (currentPassword: string, newPassword: string) => {
+    await delay(500)
+    // Simule la vérification du mot de passe actuel
+    if (currentPassword !== 'password123') {
+      throw new Error('Mot de passe actuel incorrect')
+    }
+    if (newPassword.length < 6) {
+      throw new Error('Le nouveau mot de passe doit contenir au moins 6 caractères')
+    }
+    return { message: 'Mot de passe modifié avec succès' }
+  },
 }
 

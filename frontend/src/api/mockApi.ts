@@ -9,6 +9,7 @@ import { mockDemandeAdmin } from '../mocks/data/demande-admin'
 import { mockEvaluation } from '../mocks/data/evaluation'
 import { mockFormation } from '../mocks/data/formation'
 import { mockGestionTemps } from '../mocks/data/gestion-temps'
+import { mockGestionUtilisateurs } from '../mocks/data/gestion-utilisateurs'
 
 // Simule un délai réseau
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -105,6 +106,10 @@ class MockAxios {
       const profils = await mockParametrage.profils.getAll()
       return createResponse(profils as T)
     }
+    if (url === '/api/parametrage/motifs-absence') {
+      const motifs = await mockParametrage.motifsAbsence.getAll()
+      return createResponse(motifs as T)
+    }
 
     // Gestion Admin
     if (url === '/api/gestion-admin/salaries') {
@@ -171,6 +176,16 @@ class MockAxios {
       const salarieId = urlObj.searchParams.get('salarieId') || undefined
       const temps = await mockGestionTemps.getTempsTravail(salarieId)
       return createResponse(temps as T)
+    }
+
+    // Gestion Utilisateurs
+    if (url === '/api/gestion-utilisateurs/rh') {
+      const rh = await mockGestionUtilisateurs.getRH()
+      return createResponse(rh as T)
+    }
+    if (url === '/api/gestion-utilisateurs/salaries') {
+      const salaries = await mockGestionUtilisateurs.getSalaries()
+      return createResponse(salaries as T)
     }
 
     throw new Error(`Route non mockée: GET ${url}`)
@@ -248,6 +263,10 @@ class MockAxios {
       const profil = await mockParametrage.profils.create(data.libelle)
       return createResponse(profil as T)
     }
+    if (url === '/api/parametrage/motifs-absence') {
+      const motif = await mockParametrage.motifsAbsence.create(data.libelle)
+      return createResponse(motif as T)
+    }
 
     // Gestion Admin
     if (url === '/api/gestion-admin/salaries') {
@@ -288,6 +307,10 @@ class MockAxios {
     if (url === '/api/formation') {
       const formation = await mockFormation.createFormation(data)
       return createResponse(formation as T)
+    }
+    if (url === '/api/formation/demande') {
+      const demande = await mockFormation.createDemandeFormation(data)
+      return createResponse(demande as T)
     }
     if (url.startsWith('/api/formation/') && url.includes('/evaluation')) {
       const formationId = url.split('/')[3]
@@ -353,6 +376,11 @@ class MockAxios {
       const profil = await mockParametrage.profils.update(id, data.libelle)
       return createResponse(profil as T)
     }
+    if (url.startsWith('/api/parametrage/motifs-absence/')) {
+      const id = url.split('/').pop() || ''
+      const motif = await mockParametrage.motifsAbsence.update(id, data.libelle)
+      return createResponse(motif as T)
+    }
 
     // Gestion Admin
     if (url.startsWith('/api/gestion-admin/salaries/')) {
@@ -380,6 +408,24 @@ class MockAxios {
       const id = url.split('/').pop() || ''
       const formation = await mockFormation.updateFormation(id, data)
       return createResponse(formation as T)
+    }
+
+    // Auth - Modification du mot de passe
+    if (url === '/api/auth/password') {
+      const result = await mockAuth.updatePassword(data.currentPassword, data.newPassword)
+      return createResponse(result as T)
+    }
+
+    // Gestion Utilisateurs
+    if (url.startsWith('/api/gestion-utilisateurs/rh/')) {
+      const id = url.split('/').pop() || ''
+      const rh = await mockGestionUtilisateurs.updateRH(id, data)
+      return createResponse(rh as T)
+    }
+    if (url.startsWith('/api/gestion-utilisateurs/salaries/')) {
+      const id = url.split('/').pop() || ''
+      const salarie = await mockGestionUtilisateurs.updateSalarie(id, data)
+      return createResponse(salarie as T)
     }
 
     throw new Error(`Route non mockée: PUT ${url}`)
@@ -423,6 +469,11 @@ class MockAxios {
     if (url.startsWith('/api/parametrage/profils/')) {
       const id = url.split('/').pop() || ''
       const result = await mockParametrage.profils.delete(id)
+      return createResponse(result as T)
+    }
+    if (url.startsWith('/api/parametrage/motifs-absence/')) {
+      const id = url.split('/').pop() || ''
+      const result = await mockParametrage.motifsAbsence.delete(id)
       return createResponse(result as T)
     }
 

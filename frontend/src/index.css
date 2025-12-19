@@ -32,8 +32,22 @@
   
   .input-field {
     @apply w-full px-4 py-2 border border-gray-300 rounded-lg 
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           focus:outline-none focus:ring-2 focus:border-transparent
            transition-all duration-200;
+  }
+
+  .input-field:focus {
+    border-color: #2F5FD7;
+    box-shadow: 0 0 0 3px rgba(47, 95, 215, 0.1);
+  }
+
+  .link-blue {
+    color: #2F5FD7;
+    transition: color 0.2s ease;
+  }
+
+  .link-blue:hover {
+    color: #2B3FAE;
   }
 }
 

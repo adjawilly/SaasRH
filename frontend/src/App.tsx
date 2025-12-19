@@ -1,15 +1,15 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
-import Login from './pages/Login'
+import { NotificationProvider } from './contexts/NotificationContext'
+import Login from './pages/login/Login'
 import Dashboard from './pages/Dashboard'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import CandidaturePublic from './pages/CandidaturePublic'
 import Profil from './pages/Profil'
 import Notifications from './pages/Notifications'
+import GestionUtilisateurs from './pages/GestionUtilisateurs'
 
 // Modules
 import RecrutementRoutes from './modules/recrutement/RecrutementRoutes'
@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
 })
 
 function AppRoutes() {
-  const { user } = useAuth()
+  const { } = useAuth()
 
   return (
     <Routes>
@@ -52,6 +52,7 @@ function AppRoutes() {
         <Route path="evaluation/*" element={<EvaluationRoutes />} />
         <Route path="gestion-temps/*" element={<GestionTempsRoutes />} />
         <Route path="formation/*" element={<FormationRoutes />} />
+        <Route path="gestion-utilisateurs" element={<GestionUtilisateurs />} />
         <Route path="parametrage/*" element={<ParametrageRoutes />} />
         <Route path="profil" element={<Profil />} />
         <Route path="notifications" element={<Notifications />} />
@@ -64,20 +65,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router>
-          <AppRoutes />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-          />
-        </Router>
+        <NotificationProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </NotificationProvider>
       </AuthProvider>
     </QueryClientProvider>
   )

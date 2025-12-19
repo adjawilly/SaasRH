@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import api from '../../../api'
-import { ArrowLeft, FileText, User, Briefcase, Calendar } from 'lucide-react'
+import { ArrowLeft, FileText, User, Briefcase, Calendar, FolderOpen } from 'lucide-react'
 
 export default function DossierSalarie() {
   const { id } = useParams()
@@ -10,37 +10,54 @@ export default function DossierSalarie() {
   const { data: salarie, isLoading } = useQuery({
     queryKey: ['salarie', id],
     queryFn: async () => {
-      const response = await api.get(`/api/gestion-admin/salaries/${id}/dossier`)
+      const response = await (api as any).get(`/api/gestion-admin/salaries/${id}/dossier`)
       return response.data
     },
   })
 
   if (isLoading) {
-    return <div className="text-center py-12">Chargement...</div>
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2" style={{ borderColor: '#2F5FD7' }}></div>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
+      {/* Header */}
       <div className="flex items-center space-x-4">
         <button
           onClick={() => navigate('/gestion-admin')}
-          className="p-2 hover:bg-gray-100 rounded-lg"
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          style={{ color: '#2F5FD7' }}
         >
           <ArrowLeft size={20} />
         </button>
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Dossier salarié</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 
+            className="text-2xl md:text-3xl font-bold flex items-center space-x-2"
+            style={{
+              background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            <FolderOpen size={28} style={{ color: '#2F5FD7' }} />
+            <span>Dossier salarié</span>
+          </h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">
             {salarie?.prenom} {salarie?.nom}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="card">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="lg:col-span-2 space-y-4 md:space-y-6">
+          <div className="card border-2 border-blue-200 bg-blue-50/30">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-              <User size={24} />
+              <User size={24} style={{ color: '#2F5FD7' }} />
               <span>Informations personnelles</span>
             </h2>
             <div className="grid grid-cols-2 gap-4">
@@ -63,9 +80,9 @@ export default function DossierSalarie() {
             </div>
           </div>
 
-          <div className="card">
+          <div className="card border-2 border-blue-200 bg-blue-50/30">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-              <Briefcase size={24} />
+              <Briefcase size={24} style={{ color: '#2F5FD7' }} />
               <span>Informations professionnelles</span>
             </h2>
             <div className="grid grid-cols-2 gap-4">
@@ -88,9 +105,9 @@ export default function DossierSalarie() {
             </div>
           </div>
 
-          <div className="card">
+          <div className="card border-2 border-blue-200 bg-blue-50/30">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-              <Calendar size={24} />
+              <Calendar size={24} style={{ color: '#2F5FD7' }} />
               <span>Historique</span>
             </h2>
             <div className="space-y-2">
@@ -105,10 +122,10 @@ export default function DossierSalarie() {
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="card">
+        <div className="space-y-4 md:space-y-6">
+          <div className="card border-2 border-blue-200 bg-blue-50/30">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-              <FileText size={24} />
+              <FileText size={24} style={{ color: '#2F5FD7' }} />
               <span>Documents</span>
             </h2>
             <div className="space-y-2">
@@ -127,7 +144,10 @@ export default function DossierSalarie() {
             </div>
             <button
               onClick={() => navigate(`/gestion-admin/documents/${id}`)}
-              className="mt-4 btn-primary w-full"
+              className="mt-4 w-full px-4 py-2 rounded-lg font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              style={{
+                background: 'linear-gradient(180deg, #2B3FAE 0%, #2F5FD7 50%, #3FA9F5 100%)'
+              }}
             >
               Gérer les documents
             </button>
